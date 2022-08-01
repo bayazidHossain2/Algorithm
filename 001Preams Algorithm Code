@@ -1,0 +1,77 @@
+#include<iostream>
+#include<queue>
+#include<vector>
+using namespace std;
+int main(){
+    cout<<"Enter number of Vertices : ";
+    int V;
+    cin>>V;
+    cout<<"Enter number of Edges : ";
+    int E;
+    cin>>E;
+    int adjMat[V][V];
+    int MST[V][V];
+    for(int i=0;i<V;i++){
+        for(int j=0;j<V;j++){
+            adjMat[i][j]=-1;
+            MST[i][j]=-1;
+        }
+    }
+    int a,b,w;
+    for(int i=0;i<E;i++){
+        cin>>a>>b>>w;
+        adjMat[a][b]=w;
+        adjMat[b][a]=w;
+    }
+    bool visited[V]={false};
+    priority_queue<pair<int,pair<int,int>>, vector<pair<int,pair<int,int>>>, greater<pair<int,pair<int,int>>> > qu;
+    for(int i=0;i<V;i++){
+        if(adjMat[0][i]!=-1){
+            qu.push(make_pair(adjMat[0][i],make_pair(0,i)));
+        }
+    }
+    visited[0]=true;
+
+    while(!qu.empty()){
+        pair<int,pair<int,int>> exp=qu.top();
+        cout<<"Explored : "<<exp.second.first<<' '<<exp.second.second<<' '<<exp.first<<endl;
+        qu.pop();
+        if(!visited[exp.second.second]){
+            MST[exp.second.first][exp.second.second]=exp.first;
+            MST[exp.second.second][exp.second.first]=exp.first;
+            for(int i=0;i<V;i++){
+                if(!visited[i]&&adjMat[exp.second.second][i]!=-1){
+                    qu.push(make_pair(adjMat[exp.second.second][i],make_pair(exp.second.second,i)));
+                    cout<<"Push to queue : "<<exp.second.second<<' '<<i<<' '<<adjMat[exp.second.second][i]<<endl;
+                }
+            }
+            visited[exp.second.second]=true;
+        }
+    }
+    cout<<"MST adj matrix is : "<<endl;
+    for(int i=0;i<V;i++){
+        for(int j=0;j<V;j++){
+            cout<<MST[i][j]<<' ';
+        }cout<<endl;
+    }
+    return 0;
+}
+
+/**
+9
+14
+0 1 4
+0 7 8
+1 7 11
+1 2 8
+7 8 7
+7 6 1
+8 6 6
+2 8 2
+6 5 2
+2 5 4
+2 3 7
+3 5 14
+3 4 9
+4 5 10
+*/
